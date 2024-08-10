@@ -1,7 +1,6 @@
 #!/bin/bash
 
 BASEDIR=$(dirname "$0")
-echo "basedir is: $BASEDIR"
 
 source ./$BASEDIR/.env
 
@@ -29,4 +28,4 @@ docker run --name eschool-backend \
      --env-file ./$BASEDIR/.env \
      --network eschool-network \
      -p 8080:8080 \
-     -it eschool:1.0
+     -d eschool:1.0

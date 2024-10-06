@@ -17,7 +17,9 @@ jobs:
       - name: Debug Secrets
         run: |
           echo "Bastion Public IP: ${{ secrets.BASTION_PUBLIC_IP }}"
-          echo "EC2 Private IP: ${{ secrets.EC2_PRIVATE_IP }}"
+          echo "EC2 Private IP: ${{ secrets.BACKEND_PRIVATE_IP }}"
+          echo "Available Secrets:"
+          env | grep GITHUB_
 
       - name: Set up SSH key
         run: |

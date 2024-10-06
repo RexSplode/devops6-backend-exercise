@@ -22,16 +22,35 @@ jobs:
 
       - name: Configure known_hosts
         run: |
+          # Create the .ssh directory if it doesn't exist
           mkdir -p ~/.ssh
+          
+          # Create an empty known_hosts file
           touch ~/.ssh/known_hosts
+          
+          # Set appropriate permissions
           chmod 700 ~/.ssh
           chmod 600 ~/.ssh/known_hosts
-          ssh-keyscan -H ${{ secrets.BASTION_PUBLIC_IP }} >> ~/.ssh/known_hosts
-          ssh-keyscan -H ${{ secrets.BACKEND_PRIVATE_IP }} >> ~/.ssh/known_hosts
+          
+          # Add bastion and EC2 instance keys to known_hosts
+          if ssh-keyscan -H ${{ secrets.BASTION_PUBLIC_IP }} >> ~/.ssh/known_hosts; then
+            echo "Bastion key added to known_hosts"
+          else
+            echo "Failed to add bastion key"
+          fi
+      
+          if ssh-keyscan -H ${{ secrets.BACKEND_PRIVATE_IP }} >> ~/.ssh/known_hosts; then
+            echo "EC2 instance key added to known_hosts"
+          else
+            echo "Failed to add EC2 instance key"
+          fi
+      
+          # Display the contents for debugging
           echo "known_hosts content:"
           cat ~/.ssh/known_hosts
           echo "SSH directory content:"
           ls -la ~/.ssh
+    
       
       - name: Test SSH connection
         run: |

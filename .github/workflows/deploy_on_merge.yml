@@ -19,10 +19,17 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
+          
+      - name: Check SSH directory and config files
+        run: |
+          ls -la ~/.ssh
+          cat ~/.ssh/id_rsa
+          cat ~/.ssh/known_hosts
+        
 
       - name: Configure known_hosts
         run: |
-          echo -e "Host *\n    StrictHostKeyChecking no\n    UserKnownHostsFile=/dev/null" >> ~/.ssh/config
+          ssh-keyscan -H ${{ secrets.BASTION_PUBLIC_IP }} >> ~/.ssh/known_hosts
           ssh -o ProxyCommand="ssh -W %h:%p -q ec2-user@${{ secrets.BASTION_PUBLIC_IP }}" ${{ secrets.BACKEND_PRIVATE_IP }} exit || true
 
 
